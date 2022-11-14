@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -30,8 +32,9 @@ public class MetricController {
             @ApiResponse(responseCode = "400", description = "A required parameter was not supplied or is invalid", content = @Content),
     })
     @GetMapping
-    public ResponseEntity<ResponseWrapper> getMetrics(){
-        List<MetricDto> metricDTOList = metricService.listAllMetrics();
+    public ResponseEntity<ResponseWrapper> getMetrics(@RequestParam String system, @RequestParam String name,
+                                                      @RequestParam String from, @RequestParam String to){
+        List<MetricDto> metricDTOList = metricService.listAllMetricsWith(system, name, from, to);
         return ResponseEntity.ok(new ResponseWrapper("A list of metrics that meet the search criteria",metricDTOList, HttpStatus.OK));
     }
 
@@ -43,7 +46,7 @@ public class MetricController {
             @ApiResponse(responseCode = "404", description = "The specified metric was not found", content = @Content),
     })
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper> getMetricById(@PathVariable("id") Integer id){
+    public ResponseEntity<ResponseWrapper> getMetricById(@PathVariable("id") Long id){
         MetricDto metricDTO = metricService.retrieveById(id);
         return ResponseEntity.ok(new ResponseWrapper("The requested metric",metricDTO,HttpStatus.OK));
     }
@@ -68,9 +71,9 @@ public class MetricController {
                     " or system or name does not match the existing metric", content = @Content),
             @ApiResponse(responseCode = "404", description = "The specified metric was not found", content = @Content),
     })
-    @PutMapping
-    public ResponseEntity<ResponseWrapper> updateMetric(@RequestBody MetricDto metricDTO){
-        metricService.update(metricDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseWrapper> updateMetric(@RequestBody MetricDto metricDTO, @PathVariable Long id){
+        MetricDto metric = metricService.update(metricDTO,id);
         return ResponseEntity.ok(new ResponseWrapper("The metric was recorded",HttpStatus.OK));
     }
 }

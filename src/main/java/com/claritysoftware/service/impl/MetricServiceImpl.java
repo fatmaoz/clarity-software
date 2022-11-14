@@ -7,6 +7,7 @@ import com.claritysoftware.repository.MetricRepository;
 import com.claritysoftware.service.MetricService;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,8 +30,17 @@ public class MetricServiceImpl implements MetricService {
     }
 
     @Override
-    public MetricDto retrieveById(Integer id) {
-        return mapperUtil.convert(metricRepository.findById(id).get(), new MetricDto());
+    public List<MetricDto> listAllMetricsWith(String system, String name, String from, String to) {
+        var data = metricRepository.findAllBySystemAndNameAndDateAfterAndDateBefore(system,name,Instant.ofEpochMilli(Long.parseLong(from)),Instant.ofEpochMilli(Long.parseLong(to)));
+        System.out.println(data);
+        return metricRepository.findAllBySystemAndNameAndDateAfterAndDateBefore(system,name,Instant.ofEpochMilli(Long.parseLong(from)),Instant.ofEpochMilli(Long.parseLong(to))).stream()
+                .map(metric -> mapperUtil.convert(metric,new MetricDto())).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public MetricDto retrieveById(Long id) {
+        return mapperUtil.convert(metricRepository.findById(id), new MetricDto());
     }
 
     @Override
@@ -40,8 +50,8 @@ public class MetricServiceImpl implements MetricService {
     }
 
     @Override
-    public MetricDto update(MetricDto dto) {
-        Optional<Metric> metric = metricRepository.findById(dto.getId());
+    public MetricDto update(MetricDto dto, Long id) {
+        Optional<Metric> metric = metricRepository.findById(id);
         Metric convertedMetric = mapperUtil.convert(dto, new Metric());
         convertedMetric.setId(metric.get().getId());
         metricRepository.save(convertedMetric);

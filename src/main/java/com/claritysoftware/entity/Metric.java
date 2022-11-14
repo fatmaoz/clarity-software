@@ -3,12 +3,12 @@ package com.claritysoftware.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.time.LocalDate;
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.*;
 
 @Entity
 @Table(name = "metric")
@@ -19,7 +19,16 @@ import java.time.LocalDate;
 public class Metric extends BaseEntity{
     @Column(unique = true, nullable = false)
     private String system;
+    @Column(unique = true, nullable = false)
     private String name;
-    private LocalDate date;
+    @Column(unique = true, nullable = false)
+    @CreationTimestamp()
+   // @Temporal(TemporalType.TIMESTAMP)
+    private Instant date;
+//
+//    public Timestamp getDate() {
+//        return Timestamp.valueOf(date);
+//    }
+
     private Integer value;
 }
