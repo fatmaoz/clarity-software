@@ -22,6 +22,7 @@ public class MetricController {
     private final MetricService metricService;
 
     public MetricController(MetricService metricService) {
+
         this.metricService = metricService;
     }
 
@@ -74,6 +75,6 @@ public class MetricController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper> updateMetric(@RequestBody MetricDto metricDTO, @PathVariable Long id){
         MetricDto metric = metricService.update(metricDTO,id);
-        return ResponseEntity.ok(new ResponseWrapper("The metric was recorded",HttpStatus.OK));
+        return ResponseEntity.ok(new ResponseWrapper("The metric was recorded", metricDTO, HttpStatus.OK));
     }
 }
