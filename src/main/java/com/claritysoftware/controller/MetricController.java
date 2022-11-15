@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -59,6 +60,7 @@ public class MetricController {
             @ApiResponse(responseCode = "400", description = "A required parameter was not supplied or is invalid", content = @Content),
     })
     @PostMapping
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> createMetric(@RequestBody MetricDto metricDTO){
         metricService.save(metricDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper("The metric was recorded",HttpStatus.CREATED));
@@ -73,6 +75,7 @@ public class MetricController {
             @ApiResponse(responseCode = "404", description = "The specified metric was not found", content = @Content),
     })
     @PutMapping("/{id}")
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> updateMetric(@RequestBody MetricDto metricDTO, @PathVariable Long id){
         MetricDto metric = metricService.update(metricDTO,id);
         return ResponseEntity.ok(new ResponseWrapper("The metric was recorded", metricDTO, HttpStatus.OK));

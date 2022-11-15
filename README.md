@@ -35,4 +35,10 @@ __*__ You need at least JDK 11. You can download from [here](https://www.oracle.
 
 __*__You need to go application and change credential with yours. Click [here]( ./src/main/resources/application.properties) to go to application.properties 
  
- 
+# To be able to run keycloak
+
+    __1__ Download keycloak from [here](https://www.keycloak.org)
+    __2__ Open CommandPrompt and go to bin directory of keycloak
+    __3__ Run ./standalone.sh commands
+    __4__ Go to browser run localhost:8080
+    __5__ Sign in 
